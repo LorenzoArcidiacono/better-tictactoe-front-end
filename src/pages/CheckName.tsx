@@ -2,13 +2,17 @@ import { useEffect, useState } from 'react';
 import { BaseResponse } from '../interfaces';
 
 export function CheckName() {
+  // possibili stati
   const [status, setStatus] = useState<'INITIAL' | 'SEND_DATA' | 'SENDING_DATA' | 'DATA_SENDED' | 'ERROR_SENDING_DATA'>();
+  // valore preso dalla form
   const [value, setValue] = useState<string>('');
+  // valore di ritorno della risposta
   const [data , setData] = useState<BaseResponse>();
 
   useEffect(() => {
     if(status === 'SEND_DATA') {
       setStatus('SENDING_DATA');
+      // invio effettivo dei dati 
       fetch('http://localhost:3001/info/validate', {
         method: 'POST',
         headers: {
@@ -18,6 +22,7 @@ export function CheckName() {
           name: value,
         })
       })
+      // controllo se risposta ok
       .then((rawResponse) => {
         if([200, 201].includes(rawResponse.status)) {
           return rawResponse.json();
@@ -25,6 +30,7 @@ export function CheckName() {
           throw new Error();
         }        
       })
+      // se risposta ok mostro la risposta
       .then((response: BaseResponse) => {
         setStatus('DATA_SENDED');
         setData(response);
@@ -35,6 +41,7 @@ export function CheckName() {
     }
   }, [status, value]);
 
+  // errore durante l'invio
   if (status === 'ERROR_SENDING_DATA') {
     return (
       <div>
@@ -44,6 +51,7 @@ export function CheckName() {
     );
   }
 
+  // momento in cui invio
   if(status === 'SEND_DATA' || status === 'SENDING_DATA') {
     return (
       <div>
@@ -53,6 +61,7 @@ export function CheckName() {
     );
   }
 
+  // risultato della api
   if(status === 'DATA_SENDED') {
     return (<div>
         {data?.success === true && <h1>DATI INVIATI VALIDI</h1>}
@@ -61,6 +70,7 @@ export function CheckName() {
     </div>)
   }
 
+  // stato iniziale
   return (
     <div>
       <h1>INSERISCI IL NOME</h1>

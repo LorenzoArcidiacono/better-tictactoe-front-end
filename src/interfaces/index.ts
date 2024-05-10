@@ -30,4 +30,11 @@ interface BaseResponseError extends BaseResponseInteface {
   errors: ValidationError[];
 }
 
+export interface BaseInformation {
+  name: string;
+  age: string;
+  married: boolean|null;
+  birthdate: string;
+}
+
 export type BaseResponse = BaseResponseSuccess | BaseResponseError;

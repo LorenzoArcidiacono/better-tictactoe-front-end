@@ -1,6 +1,7 @@
 import { Routes, Route, Outlet, Link } from "react-router-dom";
 import { CheckName } from './pages/CheckName';
 import { Home } from './pages/Home';
+import { CheckInfo } from "./pages/CheckInfo";
 
 export default function App() {
   return (
@@ -8,6 +9,7 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="check-name" element={<CheckName />} />
+          <Route path="check-info" element={<CheckInfo />} />
           <Route path="*" element={<NoMatch />} />
         </Route>
       </Routes>
@@ -24,6 +26,9 @@ function Layout() {
           </li>
           <li>
             <Link to="/check-name">Check Name</Link>
+          </li>
+          <li>
+            <Link to="/check-info">Check Information</Link>
           </li>
         </ul>
       </nav>
