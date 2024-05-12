@@ -9,21 +9,25 @@ import { BaseResponse, BaseInformation } from "../interfaces";
 
 export function CheckInfo() {
 	const [status, setStatus] = useState< | "INITIAL" | "SEND_DATA" | "SENDING_DATA" | "DATA_SENDED" | "ERROR_SENDING_DATA" >();
-	const [value, setValue] = useState<BaseInformation>({ name: "", age: "", married: null, birthdate: "", });
+	const [value, setValue] = useState<BaseInformation>({ name: "", age: null, married: null, birthdate: "", });
 	const [data, setData] = useState<BaseResponse>();
 	const [btnDisabled, setBtnDisabled] = useState(true);
 
 	const handleSelect = (value: string) => {
 		if (value === "married") {
-			setValue((curr) => { return { ...curr, married: true }; });
+			setValue((curr) => { let newStatus={...curr, married: true}; checkEnableBtn(newStatus); return newStatus; });
 		} else if (value === "celibe") {
-			setValue((curr) => { return { ...curr, married: false }; });
+			setValue((curr) => {  let newStatus={...curr, married: false}; checkEnableBtn(newStatus); return newStatus; });
 		}
 	};
 
 	const checkEnableBtn = (status: BaseInformation) => {
-		if ( status.name !== "" && status.age !== "" && status.birthdate !== "" ) {
-			setBtnDisabled(false);
+		if ( status.name !== "" && status.age !== null && status.birthdate !== "" ) {
+      if(status.age >= 18 && status.married===null){
+        setBtnDisabled(true);
+      }else{
+        setBtnDisabled(false);
+      }
 		} else {
 			setBtnDisabled(true);
 		}
@@ -39,7 +43,7 @@ export function CheckInfo() {
 				},
 				body: JSON.stringify({
 					name: value.name,
-					age: parseInt(value.age),
+					age: value.age,
 					married: value.married,
 					birthdate: new Date(value.birthdate),
 				}),
@@ -53,7 +57,7 @@ export function CheckInfo() {
       })
       .then((response: BaseResponse) => {
         setStatus("DATA_SENDED");
-        setValue({ name: "", age: "", married: null, birthdate: "", });
+        setValue({ name: "", age: null, married: null, birthdate: "", });
         setBtnDisabled(true);
         setData(response);
       })
@@ -106,7 +110,15 @@ export function CheckInfo() {
                 placeholder="Lorenzo"
                 type="text"
                 value={value.name}
-                onChange={(e) => { setValue((curr) => { let newStatus = { ...curr, name: e.target.value, }; checkEnableBtn(newStatus); return newStatus; }); }}
+                onChange={
+                  (e) => { 
+                    setValue((curr) => { 
+                      let newStatus = { ...curr, name: e.target.value, };
+                      checkEnableBtn(newStatus);
+                      return newStatus; 
+                    }); 
+                  }
+                }
               ></input>
             </li>
             <li>
@@ -114,8 +126,16 @@ export function CheckInfo() {
               <input
                 placeholder="0"
                 type="number"
-                value={value.age}
-                onChange={(e) => { setValue((curr) => { let newStatus = { ...curr, age: e.target.value, }; checkEnableBtn(newStatus); return newStatus; }); }}
+                value={value.age?.toString() || "" }
+                onChange={
+                  (e) => { 
+                    setValue((curr) => { 
+                      let newStatus = { ...curr, age: (e.target.value ? parseInt(e.target.value) : null), };
+                      checkEnableBtn(newStatus); 
+                      return newStatus; 
+                    }); 
+                  }
+                }
               ></input>
             </li>
             <li>
@@ -131,7 +151,15 @@ export function CheckInfo() {
               <input
                 type="date"
                 value={value.birthdate}
-                onChange={(e) => { setValue((curr) => { let newStatus = { ...curr, birthdate: e.target.value, }; checkEnableBtn(newStatus); return newStatus; }); }}
+                onChange={
+                  (e) => {
+                    setValue((curr) => { 
+                      let newStatus = { ...curr, birthdate: e.target.value, };
+                      checkEnableBtn(newStatus); 
+                      return newStatus; 
+                    }); 
+                  }
+                }
               ></input>
             </li>
           </ul>

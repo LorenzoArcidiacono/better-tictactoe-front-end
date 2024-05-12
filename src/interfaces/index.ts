@@ -32,8 +32,8 @@ interface BaseResponseError extends BaseResponseInteface {
 
 export interface BaseInformation {
   name: string;
-  age: string;
-  married: boolean|null;
+  age: number | null;
+  married: boolean | null;
   birthdate: string;
 }
 
